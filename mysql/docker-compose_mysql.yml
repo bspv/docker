@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql # 镜像
+    container_name: mysql #容器名称
+    restart: always #总是重启
+    network_mode: host # host网络模式
+    ports: # 端口映射
+      - 3306:3306
+    environment: # 环境变量
+      TZ: Asia/Shanghai # 时区
+      MYSQL_ROOT_PASSWORD: 12345678 # 设置root用户密码
+      # MYSQL_DATABASE: my_db # 创建my_db数据库
+      # MYSQL_USER: test # 创建test用户
+      # MYSQL_PASSWORD: test # 设置test用户密码
+    volumes: # 数据卷，目录挂载数据文件和配置文件
+      - /data/container/mysql/data:/var/lib/mysql # 挂载数据
+      - /data/container/mysql/conf:/etc/mysql/conf.d # 挂载配置文件
+    command: # 覆盖容器启动后默认执行的命令
+      # --default-authentication-plugin=mysql_native_password # 设置默认的密码插件
+      --character-set-server=utf8mb4 # 设置server编码
+      --collation-server=utf8mb4_general_ci # 设置server字符集
+      --explicit_defaults_for_timestamp=true # 显示默认时间戳
+      --lower_case_table_names=1 # 表名小写

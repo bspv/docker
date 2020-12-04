@@ -1,0 +1,151 @@
+version: '3.8'
+
+services:
+  zoo1:
+    image: zookeeper
+    container_name: d-zookeeper1
+    restart: always
+    hostname: zoo1
+    ports:
+      - 2181:2181
+      - 2888:2888
+      - 3888:3888
+    volumes:
+      - /data/container/zoo/zoo1/data:/data
+      - /data/container/zoo/zoo1/datalog:/datalog
+    environment:
+      TZ: Asia/Shanghai
+      ZOO_MY_ID: 1 
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:12888:13888;2182 server.3=zoo3:22888:23888;2183 # zookeeper节点列表
+
+  zoo2:
+    image: zookeeper
+    container_name: d-zookeeper2
+    restart: always
+    hostname: zoo2
+    ports:
+      - 2182:2182
+      - 12888:12888
+      - 13888:13888
+    volumes:
+      - /data/container/zoo/zoo2/data:/data
+      - /data/container/zoo/zoo2/datalog:/datalog
+    environment:
+      TZ: Asia/Shanghai
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:12888:13888;2182 server.3=zoo3:22888:23888;2183
+
+  zoo3:
+    image: zookeeper
+    container_name: d-zookeeper3
+    restart: always
+    hostname: zoo3
+    ports:
+      - 2183:2183
+      - 22888:22888
+      - 23888:23888
+    volumes:
+      - /data/container/zoo/zoo3/data:/data
+      - /data/container/zoo/zoo3/datalog:/datalog
+    environment:
+      TZ: Asia/Shanghai
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:12888:13888;2182 server.3=zoo3:22888:23888;2183
+
+  nimbus:
+    image: storm
+    container_name: d-nimbus
+    hostname: nimbus
+    command: storm nimbus
+    depends_on:
+      - zoo1
+      # - zoo2
+      # - zoo3
+    links:
+      - zoo1
+      # - zoo2
+      # - zoo3
+    restart: always
+    ports:
+      - 6627:6627
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - /data/container/storm/nimbus/data:/data
+      - /data/container/storm/nimbus/logs:/logs
+    extra_hosts:
+      - zookeeper:192.168.0.1
+
+  supervisor1:
+    image: storm
+    container_name: d-supervisor1
+    hostname: supervisor1
+    command: storm supervisor
+    depends_on:
+      - nimbus
+      - zoo1
+      # - zoo2
+      # - zoo3
+    links:
+      - nimbus
+      - zoo1
+      # - zoo2
+      # - zoo3
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - /data/container/storm/supervisor1/data:/data
+      - /data/container/storm/supervisor1/logs:/logs
+    extra_hosts:
+      - nimbus:192.168.0.1
+      - zookeeper:192.168.0.1
+  
+  supervisor2:
+    image: storm
+    container_name: d-supervisor2
+    hostname: supervisor2
+    command: storm supervisor
+    depends_on:
+      - nimbus
+      - zoo1
+      # - zoo2
+      # - zoo3
+    links:
+      - nimbus
+      - zoo1
+      # - zoo2
+      # - zoo3
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - /data/container/storm/supervisor2/data:/data
+      - /data/container/storm/supervisor2/logs:/logs
+    extra_hosts:
+      - nimbus:192.168.0.1
+      - zookeeper:192.168.0.1
+
+  ui:
+    image: storm
+    container_name: d-ui
+    hostname: host_ui
+    command: storm ui
+    depends_on:
+      - nimbus
+    links: 
+      - nimbus
+    restart: always
+    ports: 
+      - 8181:8080
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - /data/container/storm/ui/data:/data
+      - /data/container/storm/ui/logs:/logs
+    extra_hosts:
+      - nimbus:192.168.0.1
+
+networks:
+  default:
+    name: d-network
