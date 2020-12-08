@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  zoo2:
+    image: zookeeper
+    container_name: zoo2
+    restart: always
+    hostname: zoo2
+    ports:
+      - 2181:2181
+      - 2888:2888
+      - 3888:3888
+    volumes:
+      - /data/container/zoo/zoo2/data:/data
+      - /data/container/zoo/zoo2/datalog:/datalog
+    environment:
+      TZ: Asia/Shanghai
+      ZOO_MY_ID: 2
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=0.0.0.0:2888:3888;2181 server.3=zoo3:2888:3888;2181
+    extra_hosts:
+      - zoo1:192.168.0.1
+      - zoo2:192.168.0.2
+      - zoo3:192.168.0.3
+
+  broker2:
+    image: wurstmeister/kafka #镜像
+    restart: always
+    hostname: kafka2 # host名称
+    container_name: kafka2 # 容器名称
+    ports:
+      - 9092:9092
+    environment:
+      TZ: Asia/Shanghai
+      KAFKA_BROKER_ID: 2
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.0.2:9092
+      KAFKA_ADVERTISED_HOST_NAME: kafka2
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
+    volumes:
+      - /data/container/kafka/docker.sock:/var/run/docker.sock
+      - /data/container/kafka/kafka2:/kafka/kafka-logs-kafka2
+    extra_hosts:
+      - zoo1:192.168.0.1
+      - zoo2:192.168.0.2
+      - zoo3:192.168.0.3

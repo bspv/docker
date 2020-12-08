@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  zoo1:
+    image: zookeeper # 镜像
+    container_name: zoo1 # 容器名称
+    restart: always # 总是重启
+    hostname: zoo1 # host名称
+    ports: # 端口映射
+      - 2181:2181
+      - 2888:2888
+      - 3888:3888
+    volumes: # 挂载目录
+      - /data/container/zoo/zoo1/data:/data
+      - /data/container/zoo/zoo1/datalog:/datalog
+    environment:
+      TZ: Asia/Shanghai # 设置时区
+      ZOO_MY_ID: 1 # 设置myid值
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181 # 设置servers信息
+    extra_hosts: # hosts配置
+      - zoo1:192.168.0.1
+      - zoo2:192.168.0.2
+      - zoo3:192.168.0.3

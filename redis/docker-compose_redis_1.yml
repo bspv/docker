@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  redis-7001: # 服务名称
+    image: redis # 创建容器时所需的镜像
+    container_name: redis-7001 # 容器名称
+    restart: always # 容器总是重新启动
+    network_mode: host # host 网络模式
+    ports: # 端口映射
+      - 7001:7001
+      - 17001:17001
+    volumes: # 数据卷，目录挂载
+      - /data/redis-cluster/redis-7001.conf:/usr/local/etc/redis/redis.conf
+      - /data/container/redis/7001:/data
+    environment: #环境变量
+      TZ: Asia/Shanghai
+    command: redis-server /usr/local/etc/redis/redis.conf # 覆盖容器启动后默认执行的命令
+
+  redis-7004: 
+    image: redis 
+    container_name: redis-7004 
+    restart: always 
+    network_mode: host 
+    ports: 
+      - 7004:7004
+      - 17004:17004
+    volumes: 
+      - /data/redis-cluster/redis-7004.conf:/usr/local/etc/redis/redis.conf
+      - /data/container/redis/7004:/data
+    environment:
+      TZ: Asia/Shanghai
+    command: redis-server /usr/local/etc/redis/redis.conf

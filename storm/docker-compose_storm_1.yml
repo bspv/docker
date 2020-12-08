@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  zoo1:
+    image: zookeeper
+    container_name: zoo1
+    restart: always
+    hostname: zoo1
+    ports:
+      - 2181:2181
+      - 2888:2888
+      - 3888:3888
+    volumes:
+      - /data/container/zoo/zoo1/data:/data
+      - /data/container/zoo/zoo1/datalog:/datalog
+    environment:
+      TZ: Asia/Shanghai
+      ZOO_MY_ID: 1 
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+    extra_hosts:
+      - zoo1:192.168.0.1
+      - zoo2:192.168.0.2
+      - zoo3:192.168.0.3
+
+  nimbus:
+    image: storm
+    container_name: nimbus
+    hostname: nimbus
+    command: storm nimbus
+    restart: always
+    ports:
+      - 6627:6627
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - /data/storm/storm.yaml:/conf/storm.yaml
+      - /data/container/storm/nimbus/data:/data
+      - /data/container/storm/nimbus/logs:/logs
+    extra_hosts:
+      - zoo1:192.168.0.1
+      - zoo2:192.168.0.2
+      - zoo3:192.168.0.3
+
+  supervisor1:
+    image: storm
+    container_name: supervisor1
+    hostname: supervisor1
+    command: storm supervisor
+    restart: always
+    ports:
+      - 6700:6700
+      - 6701:6701
+      - 6702:6702
+      - 6703:6703
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - /data/storm/storm.yaml:/conf/storm.yaml
+      - /data/container/storm/supervisor1/data:/data
+      - /data/container/storm/supervisor1/logs:/logs
+    extra_hosts:
+      - nimbus:192.168.0.1
+      - zoo1:192.168.0.1
+      - zoo2:192.168.0.2
+      - zoo3:192.168.0.3
+
+  ui:
+    image: storm
+    container_name: ui
+    hostname: ui
+    command: storm ui
+    restart: always
+    ports: 
+      - 8181:8080
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - /data/storm/storm.yaml:/conf/storm.yaml
+      - /data/container/storm/ui/data:/data
+      - /data/container/storm/ui/logs:/logs
+    extra_hosts:
+      - nimbus:192.168.0.1
+      - zoo1:192.168.0.1
+      - zoo2:192.168.0.2
+      - zoo3:192.168.0.3
+
+networks:
+  default:
+    name: docker-network

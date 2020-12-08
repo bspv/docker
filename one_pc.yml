@@ -36,7 +36,7 @@ services:
     environment:
       TZ: Asia/Shanghai
       ZOO_MY_ID: 1 
-      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:12888:13888;2182 server.3=zoo3:22888:23888;2183 # zookeeper节点列表
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181 server.2=zoo2:12888:13888;2182 server.3=zoo3:22888:23888;2183 # zookeeper节点列表
 
   zoo2:
     image: zookeeper
@@ -53,7 +53,7 @@ services:
     environment:
       TZ: Asia/Shanghai
       ZOO_MY_ID: 2
-      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:12888:13888;2182 server.3=zoo3:22888:23888;2183
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=0.0.0.0:12888:13888;2182 server.3=zoo3:22888:23888;2183
 
   zoo3:
     image: zookeeper
@@ -70,7 +70,7 @@ services:
     environment:
       TZ: Asia/Shanghai
       ZOO_MY_ID: 3
-      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:12888:13888;2182 server.3=zoo3:22888:23888;2183
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:12888:13888;2182 server.3=0.0.0.0:22888:23888;2183
 
   redis-7001: # 服务名称
     image: redis # 创建容器时所需的镜像
@@ -234,7 +234,7 @@ services:
     restart: always
     ports:
       - 9000:9000
-    external_links:  # 连接本compose文件以外的container
+    external_links: 
       - kafka1
       - kafka2
       - kafka3
@@ -281,6 +281,11 @@ services:
       # - zoo2
       # - zoo3
     restart: always
+    ports:
+      - 6700:6700
+      - 6701:6701
+      - 6702:6702
+      - 6703:6703
     environment:
       TZ: Asia/Shanghai
     volumes:
@@ -306,6 +311,11 @@ services:
       # - zoo2
       # - zoo3
     restart: always
+    ports:
+      - 6700:6700
+      - 6701:6701
+      - 6702:6702
+      - 6703:6703
     environment:
       TZ: Asia/Shanghai
     volumes:

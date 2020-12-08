@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  redis-7002:
+    image: redis
+    container_name: redis-7002
+    network_mode: host
+    ports: 
+      - 7002:7002
+      - 17002:17002
+    volumes:
+      - /data/redis-cluster/redis-7002.conf:/usr/local/etc/redis/redis.conf
+      - /data/container/redis/7002:/data
+    environment:
+      TZ: Asia/Shanghai
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+  redis-7005:
+    image: redis
+    container_name: redis-7005
+    network_mode: host
+    ports: 
+      - 7005:7005
+      - 17005:17005
+    volumes:
+      - /data/redis-cluster/redis-7005.conf:/usr/local/etc/redis/redis.conf
+      - /data/container/redis/7005:/data
+    environment:
+      TZ: Asia/Shanghai
+    command: redis-server /usr/local/etc/redis/redis.conf
