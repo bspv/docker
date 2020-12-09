@@ -72,20 +72,20 @@ services:
       ZOO_MY_ID: 3
       ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:12888:13888;2182 server.3=0.0.0.0:22888:23888;2183
 
-  redis-7001: # 服务名称
-    image: redis # 创建容器时所需的镜像
-    container_name: redis-7001 # 容器名称
-    restart: always # 容器总是重新启动
-    network_mode: host # host 网络模式
-    ports: # 端口映射
+  redis-7001:
+    image: redis
+    container_name: redis-7001
+    restart: always
+    network_mode: host
+    ports:
       - 7001:7001
       - 17001:17001
-    volumes: # 数据卷，目录挂载
+    volumes:
       - /data/redis-cluster/redis-7001.conf:/usr/local/etc/redis/redis.conf
       - /data/container/redis/7001:/data
-    environment: #环境变量
+    environment:
       TZ: Asia/Shanghai
-    command: redis-server /usr/local/etc/redis/redis.conf # 覆盖容器启动后默认执行的命令
+    command: redis-server /usr/local/etc/redis/redis.conf
 
   redis-7002:
     image: redis
@@ -159,10 +159,10 @@ services:
     command: redis-server /usr/local/etc/redis/redis.conf
 
   broker1:
-    image: wurstmeister/kafka #镜像
+    image: wurstmeister/kafka
     restart: always
-    hostname: kafka1 # host名称
-    container_name: kafka1 # 容器名称
+    hostname: kafka1
+    container_name: kafka1
     ports:
       - 9091:9091
     environment:
@@ -226,7 +226,6 @@ services:
       - zoo1
       - zoo2
       - zoo3
-    
 
   kafka-manager:
     image: kafkamanager/kafka-manager
@@ -248,12 +247,6 @@ services:
     command: storm nimbus
     depends_on:
       - zoo1
-      # - zoo2
-      # - zoo3
-    links:
-      - zoo1
-      # - zoo2
-      # - zoo3
     restart: always
     ports:
       - 6627:6627
@@ -273,19 +266,7 @@ services:
     depends_on:
       - nimbus
       - zoo1
-      # - zoo2
-      # - zoo3
-    links:
-      - nimbus
-      - zoo1
-      # - zoo2
-      # - zoo3
     restart: always
-    ports:
-      - 6700:6700
-      - 6701:6701
-      - 6702:6702
-      - 6703:6703
     environment:
       TZ: Asia/Shanghai
     volumes:
@@ -303,19 +284,7 @@ services:
     depends_on:
       - nimbus
       - zoo1
-      # - zoo2
-      # - zoo3
-    links:
-      - nimbus
-      - zoo1
-      # - zoo2
-      # - zoo3
     restart: always
-    ports:
-      - 6700:6700
-      - 6701:6701
-      - 6702:6702
-      - 6703:6703
     environment:
       TZ: Asia/Shanghai
     volumes:
@@ -332,8 +301,6 @@ services:
     command: storm ui
     depends_on:
       - nimbus
-    links: 
-      - nimbus
     restart: always
     ports: 
       - 8181:8080
@@ -344,6 +311,7 @@ services:
       - /data/container/storm/ui/logs:/logs
     extra_hosts:
       - nimbus:192.168.0.1
+      - zookeeper:192.168.0.1
 
 networks:
   default:

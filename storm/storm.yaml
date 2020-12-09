@@ -1,4 +1,4 @@
 storm.zookeeper.servers: [zoo1,zoo2,zoo3]
-nimbus.seeds: [nimbus1]
+nimbus.seeds: [nimbus]
 storm.log.dir: "/logs"
 storm.local.dir: "/data"

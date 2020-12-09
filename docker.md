@@ -3,16 +3,13 @@
 ## 1.安装docker
     curl -fsSL https://get.docker.com -o get-docker.sh && sh get-docker.sh
 
-    查看版本
-    docker --version
+    systemctl start docker # 启动docker
 
-## 2.启动docker
-    systemctl start docker
+    systemctl enable docker.service # 开机启动
 
-    systemctl enable docker.service
+    docker --version # 查看版本
 
-
-## 3.[安装docker-compose](https://docs.docker.com/compose/install/)
+## 2.[安装docker-compose](https://docs.docker.com/compose/install/)
     sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 
     sudo chmod +x /usr/local/bin/docker-compose
@@ -21,3 +18,6 @@
 
     docker-compose --version
 
+## 3.其他
+    1.one_pc.yml是将所有中间件安装在一台机器上，需要将yml中192.168.0.1修改为具体的IP
+    2.docker-compose_{num}.yml是安装在3台机器上，需要修改192.168.0.1-3改为具体的IP

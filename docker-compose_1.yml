@@ -1,0 +1,177 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql
+    container_name: mysql
+    restart: always
+    network_mode: host
+    ports:
+      - 3306:3306
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: 12345678
+    volumes:
+      - /data/container/mysql/data:/var/lib/mysql
+      - /data/container/mysql/conf:/etc/mysql/conf.d
+    command:
+      # --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --explicit_defaults_for_timestamp=true
+      --lower_case_table_names=1
+
+  zoo1:
+    image: zookeeper
+    container_name: zoo1
+    restart: always
+    hostname: zoo1
+    ports:
+      - 2181:2181
+      - 2888:2888
+      - 3888:3888
+    volumes:
+      - /data/container/zoo/zoo1/data:/data
+      - /data/container/zoo/zoo1/datalog:/datalog
+    environment:
+      TZ: Asia/Shanghai
+      ZOO_MY_ID: 1 
+      ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
+    extra_hosts:
+      - zoo1:192.168.0.1
+      - zoo2:192.168.0.2
+      - zoo3:192.168.0.3
+
+  redis-7001:
+    image: redis
+    container_name: redis-7001
+    restart: always
+    network_mode: host
+    ports:
+      - 7001:7001
+      - 17001:17001
+    volumes:
+      - /data/redis-cluster/redis-7001.conf:/usr/local/etc/redis/redis.conf
+      - /data/container/redis/7001:/data
+    environment:
+      TZ: Asia/Shanghai
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+  redis-7004:
+    image: redis
+    container_name: redis-7004
+    restart: always
+    network_mode: host
+    ports:
+      - 7004:7004
+      - 17004:17004
+    volumes:
+      - /data/redis-cluster/redis-7004.conf:/usr/local/etc/redis/redis.conf
+      - /data/container/redis/7004:/data
+    environment:
+      TZ: Asia/Shanghai
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+  broker1:
+    image: wurstmeister/kafka
+    restart: always
+    hostname: kafka1
+    container_name: kafka1
+    ports:
+      - 9092:9092
+    environment:
+      TZ: Asia/Shanghai
+      KAFKA_BROKER_ID: 1
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.0.1:9092
+      KAFKA_ADVERTISED_HOST_NAME: kafka1
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
+    volumes:
+      - /data/container/kafka/docker.sock:/var/run/docker.sock
+      - /data/container/kafka/kafka1:/kafka/kafka-logs-kafka1
+    extra_hosts:
+      - zoo1:192.168.0.1
+      - zoo2:192.168.0.2
+      - zoo3:192.168.0.3
+
+  kafka-manager:
+    image: kafkamanager/kafka-manager
+    container_name: kafka-manager
+    restart: always
+    ports:
+      - 9000:9000
+    environment:
+      ZK_HOSTS: zoo1:2181,zoo2:2181,zoo3:2181
+    extra_hosts:
+      - zoo1:192.168.0.1
+      - zoo2:192.168.0.2
+      - zoo3:192.168.0.3
+
+  nimbus:
+    image: storm
+    container_name: nimbus
+    hostname: nimbus
+    command: storm nimbus
+    restart: always
+    ports:
+      - 6627:6627
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - /data/storm/storm.yaml:/conf/storm.yaml
+      - /data/container/storm/nimbus/data:/data
+      - /data/container/storm/nimbus/logs:/logs
+    extra_hosts:
+      - zoo1:192.168.0.1
+      - zoo2:192.168.0.2
+      - zoo3:192.168.0.3
+
+  supervisor1:
+    image: storm
+    container_name: supervisor1
+    hostname: supervisor1
+    command: storm supervisor
+    restart: always
+    ports:
+      - 6700:6700
+      - 6701:6701
+      - 6702:6702
+      - 6703:6703
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - /data/storm/storm.yaml:/conf/storm.yaml
+      - /data/container/storm/supervisor1/data:/data
+      - /data/container/storm/supervisor1/logs:/logs
+    extra_hosts:
+      - nimbus:192.168.0.1
+      - zoo1:192.168.0.1
+      - zoo2:192.168.0.2
+      - zoo3:192.168.0.3
+      - supervisor1:192.168.0.1
+      - supervisor2:192.168.0.2
+      - supervisor3:192.168.0.3
+
+  ui:
+    image: storm
+    container_name: ui
+    hostname: ui
+    command: storm ui
+    restart: always
+    ports: 
+      - 8181:8080
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - /data/storm/storm.yaml:/conf/storm.yaml
+      - /data/container/storm/ui/data:/data
+      - /data/container/storm/ui/logs:/logs
+    extra_hosts:
+      - nimbus:192.168.0.1
+      - zoo1:192.168.0.1
+      - zoo2:192.168.0.2
+      - zoo3:192.168.0.3
+
+networks:
+  default:
+    name: docker-network

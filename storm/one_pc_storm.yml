@@ -53,108 +53,77 @@ services:
       ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:12888:13888;2182 server.3=0.0.0.0:22888:23888;2183
 
   nimbus:
-    image: storm
-    container_name: d-nimbus
-    hostname: nimbus
-    command: storm nimbus
-    depends_on:
+    image: storm # 镜像
+    container_name: d-nimbus # 容器名称
+    hostname: nimbus # host名字
+    command: storm nimbus # 覆盖容器启动后默认执行的命令
+    depends_on: # 依赖于zoo1，服务会等依赖的服务启动后再启动
       - zoo1
-      # - zoo2
-      # - zoo3
-    links:
-      - zoo1
-      # - zoo2
-      # - zoo3
-    restart: always
-    ports:
+    restart: always # 总是重启
+    ports: # 端口映射
       - 6627:6627
-    environment:
+    environment: # 环境变量
       TZ: Asia/Shanghai
-    volumes:
+    volumes: # 挂载目录
       - /data/container/storm/nimbus/data:/data
       - /data/container/storm/nimbus/logs:/logs
-    extra_hosts:
+    extra_hosts:  # 添加host配置，storm.yaml中zookeeper，storm使用2181端口，所以只配置一个zookeeper
       - zookeeper:192.168.0.1
 
   supervisor1:
-    image: storm
-    container_name: d-supervisor1
-    hostname: supervisor1
-    command: storm supervisor
-    depends_on:
+    image: storm # 镜像
+    container_name: d-supervisor1 # 容器名称
+    hostname: supervisor1 # host名字
+    command: storm supervisor # 覆盖容器启动后默认执行的命令
+    depends_on: # 依赖于nimbus、zoo1，服务会等依赖的服务启动后再启动
       - nimbus
       - zoo1
-      # - zoo2
-      # - zoo3
-    links:
-      - nimbus
-      - zoo1
-      # - zoo2
-      # - zoo3
-    restart: always
-    ports:
-      - 6700:6700
-      - 6701:6701
-      - 6702:6702
-      - 6703:6703
-    environment:
+    restart: always # 总是重启
+    environment: # 环境变量
       TZ: Asia/Shanghai
-    volumes:
+    volumes: # 挂载目录
       - /data/container/storm/supervisor1/data:/data
       - /data/container/storm/supervisor1/logs:/logs
-    extra_hosts:
+    extra_hosts: # 添加host配置，storm.yaml中nimbus、zookeeper
       - nimbus:192.168.0.1
       - zookeeper:192.168.0.1
   
   supervisor2:
-    image: storm
-    container_name: d-supervisor2
-    hostname: supervisor2
-    command: storm supervisor
-    depends_on:
+    image: storm # 镜像
+    container_name: d-supervisor2 # 容器名称
+    hostname: supervisor2 # host名字
+    command: storm supervisor # 覆盖容器启动后默认执行的命令
+    depends_on: # 依赖于nimbus、zoo1，服务会等依赖的服务启动后再启动
       - nimbus
       - zoo1
-      # - zoo2
-      # - zoo3
-    links:
-      - nimbus
-      - zoo1
-      # - zoo2
-      # - zoo3
-    restart: always
-    ports:
-      - 6700:6700
-      - 6701:6701
-      - 6702:6702
-      - 6703:6703
-    environment:
+    restart: always # 总是重启
+    environment: # 环境变量
       TZ: Asia/Shanghai
-    volumes:
+    volumes: # 挂载目录
       - /data/container/storm/supervisor2/data:/data
       - /data/container/storm/supervisor2/logs:/logs
-    extra_hosts:
+    extra_hosts: # 添加host配置，storm.yaml中nimbus、zookeeper
       - nimbus:192.168.0.1
       - zookeeper:192.168.0.1
 
   ui:
-    image: storm
-    container_name: d-ui
-    hostname: host_ui
-    command: storm ui
-    depends_on:
+    image: storm # 镜像
+    container_name: d-ui # 容器名称
+    hostname: host_ui # host名字
+    command: storm ui # 覆盖容器启动后默认执行的命令
+    depends_on: # 依赖于nimbus，服务会等依赖的服务启动后再启动
       - nimbus
-    links: 
-      - nimbus
-    restart: always
-    ports: 
+    restart: always # 总是重启
+    ports: # 端口映射
       - 8181:8080
-    environment:
+    environment: # 环境变量
       TZ: Asia/Shanghai
-    volumes:
+    volumes: # 挂载目录
       - /data/container/storm/ui/data:/data
       - /data/container/storm/ui/logs:/logs
-    extra_hosts:
+    extra_hosts: # 添加host配置，storm.yaml中nimbus、zookeeper
       - nimbus:192.168.0.1
+      - zookeeper:192.168.0.1
 
 networks:
   default:

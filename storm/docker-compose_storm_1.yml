@@ -23,67 +23,70 @@ services:
       - zoo3:192.168.0.3
 
   nimbus:
-    image: storm
-    container_name: nimbus
-    hostname: nimbus
-    command: storm nimbus
-    restart: always
-    ports:
+    image: storm # 镜像
+    container_name: nimbus # 容器名称
+    hostname: nimbus # host名字
+    command: storm nimbus # 覆盖容器启动后默认执行的命令
+    restart: always # 总是重启
+    ports: # 端口映射
       - 6627:6627
-    environment:
+    environment: # 环境变量
       TZ: Asia/Shanghai
-    volumes:
+    volumes: # 挂载目录
       - /data/storm/storm.yaml:/conf/storm.yaml
       - /data/container/storm/nimbus/data:/data
       - /data/container/storm/nimbus/logs:/logs
-    extra_hosts:
+    extra_hosts: # 添加host配置，storm.yaml中[zoo1,zoo2,zoo3]
       - zoo1:192.168.0.1
       - zoo2:192.168.0.2
       - zoo3:192.168.0.3
 
   supervisor1:
-    image: storm
-    container_name: supervisor1
-    hostname: supervisor1
-    command: storm supervisor
-    restart: always
-    ports:
+    image: storm # 镜像
+    container_name: supervisor1 # 容器名称
+    hostname: supervisor1 # host名字
+    command: storm supervisor # 覆盖容器启动后默认执行的命令
+    restart: always # 总是重启
+    ports: # 端口映射
       - 6700:6700
       - 6701:6701
       - 6702:6702
       - 6703:6703
-    environment:
+    environment: # 环境变量
       TZ: Asia/Shanghai
-    volumes:
+    volumes: # 挂载目录
       - /data/storm/storm.yaml:/conf/storm.yaml
       - /data/container/storm/supervisor1/data:/data
       - /data/container/storm/supervisor1/logs:/logs
-    extra_hosts:
+    extra_hosts: # 添加host配置，storm.yaml中[zoo1,zoo2,zoo3],[nimbus],另外supervisor1会互相通信，所以也要加上
       - nimbus:192.168.0.1
       - zoo1:192.168.0.1
       - zoo2:192.168.0.2
       - zoo3:192.168.0.3
+      - supervisor1:192.168.0.1
+      - supervisor2:192.168.0.2
+      - supervisor3:192.168.0.3
 
   ui:
-    image: storm
-    container_name: ui
-    hostname: ui
-    command: storm ui
-    restart: always
-    ports: 
+    image: storm # 镜像
+    container_name: ui # 容器名称
+    hostname: ui # host名字
+    command: storm ui # 覆盖容器启动后默认执行的命令
+    restart: always # 总是重启
+    ports: # 端口映射
       - 8181:8080
-    environment:
+    environment: # 环境变量
       TZ: Asia/Shanghai
-    volumes:
+    volumes: # 挂载目录
       - /data/storm/storm.yaml:/conf/storm.yaml
       - /data/container/storm/ui/data:/data
       - /data/container/storm/ui/logs:/logs
-    extra_hosts:
+    extra_hosts: # 添加host配置，storm.yaml中[zoo1,zoo2,zoo3],[nimbus]
       - nimbus:192.168.0.1
       - zoo1:192.168.0.1
       - zoo2:192.168.0.2
       - zoo3:192.168.0.3
 
 networks:
-  default:
+  default: # 配置缺省网络名字，提交topology时，--network docker-network
     name: docker-network

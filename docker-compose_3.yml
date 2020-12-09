@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+  zoo3:
+    image: zookeeper
+    container_name: zoo3
+    restart: always
+    hostname: zoo3
+    ports:
+      - 2181:2181
+      - 2888:2888
+      - 3888:3888
+    volumes:
+      - /data/container/zoo/zoo3/data:/data
+      - /data/container/zoo/zoo3/datalog:/datalog
+    environment:
+      TZ: Asia/Shanghai
+      ZOO_MY_ID: 3
+      ZOO_SERVERS: server.1=zoo1:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=0.0.0.0:2888:3888;2181
+    extra_hosts:
+      - zoo1:192.168.0.1
+      - zoo2:192.168.0.2
+      - zoo3:192.168.0.3
+
+  redis-7003:
+    image: redis
+    container_name: redis-7003
+    network_mode: host
+    ports: 
+      - 7003:7003
+      - 17003:17003
+    volumes:
+      - /data/redis-cluster/redis-7003.conf:/usr/local/etc/redis/redis.conf
+      - /data/container/redis/7003:/data
+    environment:
+      TZ: Asia/Shanghai
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+  redis-7006:
+    image: redis
+    container_name: redis-7006
+    network_mode: host
+    ports: 
+      - 7006:7006
+      - 17006:17006
+    volumes:
+      - /data/redis-cluster/redis-7006.conf:/usr/local/etc/redis/redis.conf
+      - /data/container/redis/7006:/data
+    environment:
+      TZ: Asia/Shanghai
+    command: redis-server /usr/local/etc/redis/redis.conf
+
+  broker3:
+    image: wurstmeister/kafka
+    restart: always
+    hostname: kafka3
+    container_name: kafka3
+    ports:
+      - 9092:9092
+    environment:
+      TZ: Asia/Shanghai
+      KAFKA_BROKER_ID: 3
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.0.3:9092
+      KAFKA_ADVERTISED_HOST_NAME: kafka3
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
+    volumes:
+      - /data/container/kafka/docker.sock:/var/run/docker.sock
+      - /data/container/kafka/kafka3:/kafka/kafka-logs-kafka3
+    extra_hosts:
+      - zoo1:192.168.0.1
+      - zoo2:192.168.0.2
+      - zoo3:192.168.0.3
+
+  supervisor3:
+    image: storm
+    container_name: supervisor3
+    hostname: supervisor3
+    command: storm supervisor
+    restart: always
+    ports:
+      - 6700:6700
+      - 6701:6701
+      - 6702:6702
+      - 6703:6703
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - /data/storm/storm.yaml:/conf/storm.yaml
+      - /data/container/storm/supervisor3/data:/data
+      - /data/container/storm/supervisor3/logs:/logs
+    extra_hosts:
+      - nimbus:192.168.0.1
+      - zoo1:192.168.0.1
+      - zoo2:192.168.0.2
+      - zoo3:192.168.0.3
+      - supervisor1:192.168.0.1
+      - supervisor2:192.168.0.2
+      - supervisor3:192.168.0.3

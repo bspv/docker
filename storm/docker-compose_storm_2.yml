@@ -44,7 +44,6 @@ services:
       - zoo1:192.168.0.1
       - zoo2:192.168.0.2
       - zoo3:192.168.0.3
-
-networks:
-  default:
-    name: docker-network
+      - supervisor1:192.168.0.1
+      - supervisor2:192.168.0.2
+      - supervisor3:192.168.0.3
