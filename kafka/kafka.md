@@ -44,3 +44,8 @@
 ```
 nohup /usr/local/kafka/kafka_2.13-2.6.0/bin/kafka-producer-perf-test.sh  --topic topic_log_detail  --print-metrics --payload-file /data/bin/3.txt --num-records 2000 --throughput 200  --producer-props bootstrap.servers=192.168.0.1:9092,192.168.0.2:9092,192.168.0.3:9092 > kafka_test.log  2>&1 &
 ```
+
+10.关闭kafka
+```
+/usr/local/kafka_2.13-2.6.0/bin/kafka-server-stop.sh /usr/local/kafka_2.13-2.6.0/config/server.properties
+```

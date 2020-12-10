@@ -25,6 +25,7 @@ services:
   redis-7002:
     image: redis
     container_name: redis-7002
+    restart: always
     network_mode: host
     ports: 
       - 7002:7002
@@ -39,6 +40,7 @@ services:
   redis-7005:
     image: redis
     container_name: redis-7005
+    restart: always
     network_mode: host
     ports: 
       - 7005:7005
