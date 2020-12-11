@@ -11,7 +11,7 @@ docker run -it --rm -v "$(pwd)":/app -v /data/container/node/logs:/root/.npm/_lo
         -v /data/container/node/logs:/root/.npm/_logs/ 将npm日志挂载到宿主机
         -w /app 指定工作路径
         node 镜像名称
-        npm install 打包命令
+        npm install --legacy-peer-deps 打包命令
 
 3.npm run build
 ```

@@ -36,8 +36,7 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: kafka1 # 设置hostname
       KAFKA_ADVERTISED_PORT: 9092 # 端口
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181 # zk节点信息
-    volumes:
-      - /data/container/kafka/docker.sock:/var/run/docker.sock
+    volumes: # 挂载日志
       - /data/container/kafka/kafka1:/kafka/kafka-logs-kafka1
     extra_hosts: # hosts配置
       - zoo1:192.168.0.1

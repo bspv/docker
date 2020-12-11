@@ -23,10 +23,10 @@ services:
       - zoo3:192.168.0.3
 
   broker2:
-    image: wurstmeister/kafka #镜像
+    image: wurstmeister/kafka
     restart: always
-    hostname: kafka2 # host名称
-    container_name: kafka2 # 容器名称
+    hostname: kafka2
+    container_name: kafka2
     ports:
       - 9092:9092
     environment:
@@ -37,7 +37,6 @@ services:
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2181,zoo3:2181
     volumes:
-      - /data/container/kafka/docker.sock:/var/run/docker.sock
       - /data/container/kafka/kafka2:/kafka/kafka-logs-kafka2
     extra_hosts:
       - zoo1:192.168.0.1

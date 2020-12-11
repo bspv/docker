@@ -172,7 +172,6 @@ services:
       KAFKA_ADVERTISED_PORT: 9091
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2182,zoo3:2183
     volumes:
-      - /data/container/kafka/kafka1_docker.sock:/var/run/docker.sock
       - /data/container/kafka/kafka1:/kafka/kafka-logs-kafka1
     external_links:
       - zoo1
@@ -195,7 +194,6 @@ services:
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2182,zoo3:2183
     volumes:
-      - /data/container/kafka/kafka2_docker.sock:/var/run/docker.sock
       - /data/container/kafka/kafka2:/kafka/kafka-logs-kafka2
     external_links:
       - zoo1
@@ -218,7 +216,6 @@ services:
       KAFKA_ADVERTISED_PORT: 9093
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2182,zoo3:2183
     volumes:
-      - /data/container/kafka/kafka3_docker.sock:/var/run/docker.sock
       - /data/container/kafka/kafka3:/kafka/kafka-logs-kafka3
     external_links:
       - zoo1
