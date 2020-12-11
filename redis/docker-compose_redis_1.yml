@@ -5,7 +5,6 @@ services:
     image: redis # 创建容器时所需的镜像
     container_name: redis-7001 # 容器名称
     restart: always # 容器总是重新启动
-    network_mode: host # host 网络模式
     ports: # 端口映射
       - 7001:7001
       - 17001:17001
@@ -20,7 +19,6 @@ services:
     image: redis 
     container_name: redis-7004 
     restart: always 
-    network_mode: host 
     ports: 
       - 7004:7004
       - 17004:17004
