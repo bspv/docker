@@ -18,7 +18,7 @@ docker run -it --rm -v "$(pwd)":/app -v /data/container/node/logs:/root/.npm/_lo
 
 3.npm run build
 ```
-docker run -it --rm -v "$(pwd)":/app -v /data/container/node/logs:/root/.npm/_logs/ -w /app node npm run build:test
+docker run -it --rm -v "$(pwd)":/app -v /data/container/node/logs:/root/.npm/_logs/ -w /app node npm run build:dev
 ```
     注：
         -v "$(pwd)":/app 将当前目录挂载到容器的/app下
