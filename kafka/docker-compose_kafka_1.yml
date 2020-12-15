@@ -1,27 +1,6 @@
 version: '3.8'
 
 services:
-  zoo1:
-    image: zookeeper
-    container_name: zoo1
-    restart: always
-    hostname: zoo1
-    ports:
-      - 2181:2181
-      - 2888:2888
-      - 3888:3888
-    volumes:
-      - /data/container/zoo/zoo1/data:/data
-      - /data/container/zoo/zoo1/datalog:/datalog
-    environment:
-      TZ: Asia/Shanghai
-      ZOO_MY_ID: 1 
-      ZOO_SERVERS: server.1=0.0.0.0:2888:3888;2181 server.2=zoo2:2888:3888;2181 server.3=zoo3:2888:3888;2181
-    extra_hosts:
-      - zoo1:192.168.0.1
-      - zoo2:192.168.0.2
-      - zoo3:192.168.0.3
-
   broker1:
     image: wurstmeister/kafka # 镜像
     restart: always # 总是重启
