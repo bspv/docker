@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  zero:
+    image: dgraph/dgraph:latest
+    volumes:
+      - /data/container/dgraph:/dgraph
+    ports:
+      - 5080:5080
+      - 6080:6080
+    restart: on-failure
+    command: dgraph zero --my=zero:5080
+  alpha:
+    image: dgraph/dgraph:latest
+    volumes:
+      - /data/container/dgraph/data:/dgraph
+    ports:
+      - 8080:8080
+      - 9080:9080
+    restart: on-failure
+    command: dgraph alpha --my=alpha:7080 --zero=zero:5080 --security whitelist=<IP_ADDRESS> #whitelist配置的ip可以进行rdf\json格式备份
+  ratel:
+    image: dgraph/ratel:latest
+    ports:
+      - 8000:8000
