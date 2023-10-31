@@ -1,0 +1,1 @@
+docker exec -it c4e8a94a646c bash -c "mysql -u root -p123456 -Dsens --default-character-set=utf8 -e \"select * from sens_devicemodel where id = 197136\""
