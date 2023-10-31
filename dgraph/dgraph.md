@@ -1,7 +1,9 @@
 ### 单机版
 
 ```
-docker run --name vm_dgraph -d -p "8080:8080" -p "9080:9080" -p "7000:8080" -p "8000:8000" -p "6080:6080" -v /data/container/dgraph:/dgraph dgraph/standalone:latest
+docker run --name vm_dgraph -d -p "8080:8080" -p "9080:9080" -v /data/container/dgraph:/dgraph dgraph/standalone:latest
+
+docker run --name ratel  -d -p "8000:8000"  dgraph/ratel:latest
 ```
 
 ### 备份
