@@ -30,3 +30,10 @@
     2.查看docker挂载的源目录和目标目录信息
         docker inspect --format "{{range .Mounts}}{{println .Source}}{{end}}" $containerId
         docker inspect --format "{{range .Mounts}}{{println .Destination}}{{end}}" $containerId
+
+
+### 5.镜像导出导入
+    1.镜像导出
+        docker save -o /data/dgraph.tar dgraph/standalone:v23.0.0 dgraph/ratel:v21.12.0
+    2.镜像导入
+        docker load < /data/dgraph.tar
