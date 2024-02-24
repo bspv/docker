@@ -10,8 +10,14 @@
     docker --version # 查看版本
 
 ## 2.[安装docker-compose](https://docs.docker.com/compose/install/)
-    sudo curl -L "https://github.com/docker/compose/releases/download/Latest/docker-compose-$(uname -s | awk '{print tolower($0)}')-$(uname -m)" -o /usr/local/bin/docker-compose # 安装最新版
 
+### 2.1命令行下载
+    sudo curl -L "https://github.com/docker/compose/releases/download/$(改成具体版本号)/docker-compose-$(uname -s | awk '{print tolower($0)}')-$(uname -m)" -o /usr/local/bin/docker-compose
+### 2.2git下载文件
+    进入https://github.com/docker/compose/releases/，找到linux-x86_64版本下载
+    然后上传对应机器，再把docker-compose-linux-x86_64改为docker-compose，再移动到/usr/local/bin/目录下
+
+### 2.3增加权限，建软连接
     sudo chmod +x /usr/local/bin/docker-compose
 
     sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
