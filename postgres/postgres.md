@@ -5,7 +5,8 @@
 #### 1.1docker启动postgres
 ```
 docker run -it -d --name docker-postgresql \ 
-  -p 5432:5432 \ 
+  -p 5432:5432 \
+  -restart always \ 
   -e TZ=Asia/Shanghai \ 
   -e POSTGRES_USER=postgres \ 
   -e POSTGRES_PASSWORD=12345678 \ 
