@@ -32,10 +32,10 @@
 
 ### 4.使用
     1.查看docker容器的实时CPU、内存信息
-        docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}" $containerId
+        docker stats --format "table {{.Name}}\t{{.CPUPerc}}\t{{.MemUsage}}" ${containerId}
     2.查看docker挂载的源目录和目标目录信息
-        docker inspect --format "{{range .Mounts}}{{println .Source}}{{end}}" $containerId
-        docker inspect --format "{{range .Mounts}}{{println .Destination}}{{end}}" $containerId
+        docker inspect --format "{{range .Mounts}}{{println .Source}}{{end}}" ${containerId}
+        docker inspect --format "{{range .Mounts}}{{println .Destination}}{{end}}" ${containerId}
 
 
 ### 5.镜像导出导入
@@ -43,3 +43,17 @@
         docker save -o /data/dgraph.tar dgraph/standalone:v23.0.0 dgraph/ratel:v21.12.0
     2.镜像导入
         docker load < /data/dgraph.tar
+
+### [6.容器配置更改](https://blog.csdn.net/lishuoboy/article/details/130174200)
+    6.1) 查找docker路径、容器id
+    docker info | grep 'Docker Root' #docker路径
+    docker ps -a --no-trunc | grep  容器名 #查找容器信息，容器id等
+    6.2) 停止容器
+    docker stop $containerId
+    6.3) 修改配置文件
+    vim ${Docker Root}/containers/${containerId}/config.v2.json
+    vim ${Docker Root}/containers/${containerId}/config.json
+    6.4) 重启docker服务
+    sudo systemctl stop docker.socket
+    sudo systemctl stop docker
+    sudo systemctl start docker
