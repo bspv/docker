@@ -9,6 +9,7 @@ docker run -it -d -p 8081:8080 --name geoserver \
   -v /data/geoserver/libs:/opt/additional_libs  \
   -v /data/geoserver/data:/opt/geoserver_data  \
   --env INSTALL_EXTENSIONS=true \
+  --env CORS_ENABLED=true \
   --env STABLE_EXTENSIONS="importer,printing,monitor,params-extractor,css,vectortiles" \
   docker.osgeo.org/geoserver:2.22.5
 ```
